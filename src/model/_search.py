@@ -1,5 +1,6 @@
 from typing import Literal
 from pydantic import BaseModel, Field
+from src.constants import CategoryNameJAPANESE
 
 ContentType = Literal["text", "image", "table", "chart", "all"]
 
@@ -29,5 +30,15 @@ class BusinessSearchParams(BaseModel):
         description=(
             "Danh sách các trường thông tin cần trích xuất kèm các loại nội dung tương ứng "
             "trong internal."
+        ),
+    )
+
+
+class SelectedCategoryInstructionsParams(BaseModel):
+    categories: list[CategoryNameJAPANESE] = Field(
+        ...,
+        min_length=1,
+        description=(
+            "Danh sách các thành phần trong nhiệm vụ cần lấy hướng dẫn để làm rõ hơn cho nhiệm vụ đó."
         ),
     )

@@ -1,16 +1,15 @@
 import json
 from typing import Any
 
-from pydantic import BaseModel, Field
 from langchain.tools import tool, ToolRuntime
 
-from src.model import AgentContext, BusinessSearchParams, BusinessFieldRequest
+from src.model import AgentContext, BusinessSearchParams, BusinessFieldRequest, SelectedCategoryInstructionsParams
 from src.tools.business_tool._utils import _load_sort_folders_ja_items
 from src.constants import CategoryNameJAPANESE
 
 
 @tool(
-    "get_sort_format_category_instructions",
+    "get_all_category_instructions",
     description=(
         "Tool dùng để lấy tất cả hướng dẫn, mô tả chi tiết thông tin trong bài toán phân loại.\n"
         "**Sử dụng khi:**\n"
@@ -21,31 +20,10 @@ def get_category_instructions() -> list[dict[str, str | None]]:
     return _load_sort_folders_ja_items()
 
 
-class SelectedSortCategoryInstructionsParams(BaseModel):
-    categories: list[CategoryNameJAPANESE] = Field(
-        ...,
-        min_length=1,
-        description=(
-            "Danh sách tên category (theo sort_folders_ja.json) cần lấy hướng dẫn cho nhiệm vụ. "
-            "Độ dài danh sách chính là số (n) category cần làm rõ—chọn dựa trên nhiệm vụ phân loại/sắp xếp."
-        ),
-    )
-
-
 @tool(
-    "get_selected_sort_format_category_instructions",
-    args_schema=SelectedSortCategoryInstructionsParams,
+    "get_selected_category_instructions",
+    args_schema=SelectedCategoryInstructionsParams,
     description=(
-        "Tool dùng để lấy hướng dẫn và mô tả chi tiết chỉ cho các category bạn đã chọn, "
-        "trong bài toán phân loại/sắp xếp tài liệu.\n"
-        "**Mục đích:** đưa ra bối cảnh nhiệm vụ và định nghĩa category trước khi bạn gọi tool tìm kiếm hoặc trích xuất chính xác "
-        "để trả lời đúng yêu cầu cuối.\n"
-        "**Sử dụng khi:**\n"
-        "   - Đã suy luận được một hoặc nhiều category liên quan tới nhiệm vụ và cần đọc mô tả chuẩn của từng category đó.\n"
-        "   - Cần làm rõ tiêu chí phân loại trước bước tra dữ liệu chi tiết.\n"
-        "**Không dùng để:** thay thế hoàn toàn bước tìm kiếm/trích xuất khi đã cần kết quả cụ thể từ nguồn."
-
-
         "Tool dùng để lấy hướng dẫn và mô tả chi tiết các category để làm rõ hơn về nội dung của tài liệu trong nhiệm vụ cần thực hiện.\n"
         "Tool dùng bổ sung thông tin trước khi thực hiện gọi tool tìm kiếm và trích xuất thông tin để thực hiện nhiệm vụ.\n"
         "**Sử dụng trong các nhiệm vụ:**\n"
