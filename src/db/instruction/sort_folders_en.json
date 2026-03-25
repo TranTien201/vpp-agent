@@ -1,0 +1,82 @@
+{
+  "1": {
+    "name": "Spine/Cover",
+    "description": "Spine and cover of the as-built documentation. Documents containing basic information such as property name, project name, and creation date."
+  },
+  "2": {
+    "name": "Table of Contents/Index",
+    "description": "Table of contents, index, and list of handover documents for the as-built documentation. Documents defining the overall structure and item list."
+  },
+  "3": {
+    "name": "Equipment Handover List",
+    "description": "List and receipt of equipment sets (keys, spare parts, manuals, etc.) handed over to the customer."
+  },
+  "4": {
+    "name": "Construction Completion Report",
+    "description": "Construction completion notice, handover document, and completion report. Documents proving project completion and handover."
+  },
+  "5": {
+    "name": "Construction Schedule",
+    "description": "Schedule showing project planning and actual results. Records of start date, completion date, and progress of each phase."
+  },
+  "6": {
+    "name": "As-built/Construction Drawings",
+    "description": "Set of drawings accurately showing the status at construction completion, including site plans, layout plans, single-line diagrams, string diagrams, and equipment layouts."
+  },
+  "7": {
+    "name": "Test Reports/Inspection Sheets",
+    "description": "Successful pass documents recording test results such as equipment operation tests, insulation resistance measurements, and grounding resistance measurements."
+  },
+  "8": {
+    "name": "Self-Inspection Sheets",
+    "description": "Records of as-built inspections and internal inspections by the contractor. Includes self-inspection check sheets and reports of corrective actions."
+  },
+  "10": {
+    "name": "Equipment Configuration/List",
+    "description": "Documents listing major equipment (modules, PCS, monitoring devices, etc.) with manufacturers, models, specs, and quantities."
+  },
+  "11": {
+    "name": "PCS/Power Conditioners",
+    "description": "Individual specifications, test reports, delivery notes, and approval drawings related to Power Conditioning Systems (PCS)."
+  },
+  "12": {
+    "name": "Modules",
+    "description": "Specifications, flash reports (inspection reports), delivery notes, and serial number lists related to solar battery modules."
+  },
+  "13": {
+    "name": "Monitoring/Communication Devices",
+    "description": "Specifications, test reports, account settings, and connection diagrams for SmartLoggers, gateways, routers, etc."
+  },
+  "14": {
+    "name": "Equipment Specs",
+    "description": "Catalogs and specifications for other equipment (distribution boards, mounting structures, fittings, measuring instruments, etc.) delivered to the project."
+  },
+  "15": {
+    "name": "User/Operation Manuals",
+    "description": "Operation manuals, quick start guides, and procedures for emergency operation or system recovery."
+  },
+  "16": {
+    "name": "Administrative Documents",
+    "description": "Applications, notifications, and approval documents for government agencies (METI safety regulations, self-confirmation results, etc.), fire departments, and local governments."
+  },
+  "17": {
+    "name": "Utility Documents/Responses",
+    "description": "Grid connection studies, application forms, construction fees, utility contract notices, response letters, and setting lists for electric power companies."
+  },
+  "18": {
+    "name": "Warranties",
+    "description": "Manufacturer warranties, system warranties, and quality assurance regulations for major equipment and construction work."
+  },
+  "19": {
+    "name": "Construction Photos/Album",
+    "description": "Photos recording the construction process, completion of each phase, equipment installation status, fixed-point observations, meter serial numbers, etc."
+  },
+  "20": {
+    "name": "Strength Calculation Documents",
+    "description": "Structural strength study reports for mounting structures and fittings (wind pressure, snow load, soil bearing capacity, etc.). Supporting documents for administrative filings."
+  },
+  "22": {
+    "name": "Other/Manifests",
+    "description": "Industrial waste management forms (manifests), calibration certificates (pyranometers, thermometers), chief technician information, and other miscellaneous documents."
+  }
+}

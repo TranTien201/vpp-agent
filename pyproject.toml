@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "src"
+version = "0.1.0"
+description = ""
+authors = []
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.11.15"
+langchain-openai = "^1.1.12"
+langchain = "^1.2.13"
+pydantic-settings = "^2.13.1"
+python-dotenv = "^1.2.2"
+rich = "^14.3.3"

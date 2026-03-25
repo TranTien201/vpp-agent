@@ -1,0 +1,8 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+# Data storage
+.vaxiom
+poetry.lock
+.env*
+/package/

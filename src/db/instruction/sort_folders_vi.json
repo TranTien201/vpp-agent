@@ -1,0 +1,82 @@
+{
+  "1": {
+    "name": "Bìa hồ sơ",
+    "description": "Bìa ngoài và bìa trong của hồ sơ hoàn công. Tài liệu chứa thông tin cơ bản như tên công trình, tên dự án, thời gian lập hồ sơ."
+  },
+  "2": {
+    "name": "Mục lục / Index",
+    "description": "Danh mục, chỉ mục và danh sách tài liệu bàn giao của hồ sơ hoàn công. Tài liệu định nghĩa cấu trúc tổng thể và danh sách hạng mục toàn bộ hồ sơ."
+  },
+  "3": {
+    "name": "Danh sách bàn giao thiết bị",
+    "description": "Danh sách và biên nhận bàn giao các thiết bị đi kèm (chìa khóa, vật tư dự phòng, tài liệu hướng dẫn...) cho khách hàng."
+  },
+  "4": {
+    "name": "Báo cáo hoàn công",
+    "description": "Thông báo hoàn thành thi công, biên bản bàn giao và báo cáo hoàn công. Tài liệu chứng minh việc hoàn thành và bàn giao dự án."
+  },
+  "5": {
+    "name": "Tiến độ thi công",
+    "description": "Bảng tiến độ thể hiện kế hoạch và kết quả thực tế của công trình. Ghi nhận ngày khởi công, ngày hoàn thành và tiến độ từng giai đoạn."
+  },
+  "6": {
+    "name": "Bản vẽ hoàn công",
+    "description": "Bộ bản vẽ đầy đủ phản ánh chính xác trạng thái công trình khi hoàn công, bao gồm: sơ đồ vị trí, sơ đồ bố trí, sơ đồ đơn tuyến, sơ đồ string, sơ đồ bố trí thiết bị."
+  },
+  "7": {
+    "name": "Biên bản thử nghiệm / Phiếu kiểm tra",
+    "description": "Tài liệu ghi nhận kết quả kiểm tra nghiệm thu: thử nghiệm hoạt động thiết bị, đo điện trở cách điện, đo điện trở tiếp địa..."
+  },
+  "8": {
+    "name": "Phiếu tự kiểm tra nội bộ",
+    "description": "Biên bản kiểm tra hoàn công và kiểm tra nội bộ do nhà thầu thi công thực hiện. Bao gồm checklist tự kiểm tra và báo cáo các hạng mục khắc phục."
+  },
+  "10": {
+    "name": "Danh sách cấu hình thiết bị",
+    "description": "Danh sách tổng hợp các thiết bị chính được sử dụng (tấm pin, PCS, thiết bị giám sát...) kèm nhà sản xuất, model, thông số kỹ thuật và số lượng."
+  },
+  "11": {
+    "name": "Hồ sơ PCS / Bộ biến tần",
+    "description": "Tài liệu liên quan đến bộ biến tần PCS (Power Conditioning System): thông số kỹ thuật riêng, biên bản thử nghiệm, phiếu giao hàng, bản vẽ phê duyệt..."
+  },
+  "12": {
+    "name": "Hồ sơ tấm pin mặt trời (Module)",
+    "description": "Tài liệu liên quan đến tấm pin mặt trời: thông số kỹ thuật, flash report (biên bản kiểm tra), phiếu giao hàng, danh sách số sê-ri."
+  },
+  "13": {
+    "name": "Thiết bị giám sát & truyền thông",
+    "description": "Tài liệu liên quan đến các thiết bị truyền thông (SmartLogger, gateway, router...): thông số kỹ thuật, biên bản thử nghiệm, cấu hình tài khoản, sơ đồ kết nối."
+  },
+  "14": {
+    "name": "Catalog / Thông số thiết bị khác",
+    "description": "Catalog và tài liệu kỹ thuật của các thiết bị khác được cung cấp cho dự án (tủ thu gom, giá đỡ, phụ kiện, thiết bị đo lường...)."
+  },
+  "15": {
+    "name": "Hướng dẫn vận hành & sử dụng",
+    "description": "Tài liệu hướng dẫn vận hành thiết bị, hướng dẫn khởi động nhanh, quy trình vận hành độc lập và quy trình khôi phục hệ thống."
+  },
+  "16": {
+    "name": "Hồ sơ hành chính / Thủ tục cơ quan nhà nước",
+    "description": "Hồ sơ nộp cho Bộ Kinh tế Nhật (METI: quy trình bảo an, thông báo kết quả tự xác nhận...), phòng cháy chữa cháy và chính quyền địa phương."
+  },
+  "17": {
+    "name": "Hồ sơ đấu nối lưới điện",
+    "description": "Tài liệu làm việc với công ty điện lực: nghiên cứu đấu nối, đơn xin đấu nối lưới, chi phí thi công, thông báo hợp đồng, thư phản hồi, danh sách chỉnh định."
+  },
+  "18": {
+    "name": "Giấy bảo hành",
+    "description": "Giấy bảo hành của nhà sản xuất cho các thiết bị chính, bảo hành hệ thống tổng thể và quy định bảo đảm chất lượng công trình."
+  },
+  "19": {
+    "name": "Ảnh thi công / Album công trình",
+    "description": "Ảnh ghi lại quá trình thi công, hoàn thành từng giai đoạn, trạng thái lắp đặt thiết bị, quan trắc định điểm, số sê-ri và chỉ số đồng hồ đo."
+  },
+  "20": {
+    "name": "Tài liệu tính toán kết cấu",
+    "description": "Báo cáo kiểm tra độ bền kết cấu của giá đỡ và phụ kiện (áp lực gió, tải trọng tuyết, sức chịu tải của nền đất). Tài liệu cơ sở cho hồ sơ hành chính."
+  },
+  "22": {
+    "name": "Tài liệu khác / Manifest",
+    "description": "Phiếu quản lý chất thải công nghiệp (manifest), giấy chứng nhận hiệu chuẩn (máy đo bức xạ, nhiệt kế), thông tin kỹ thuật viên trưởng và các tài liệu lẻ không thuộc danh mục trên."
+  }
+}
