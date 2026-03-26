@@ -9,7 +9,7 @@ from src.constants import CategoryNameJAPANESE
 
 
 @tool(
-    "get_all_category_instructions",
+    "get_all_internal_knowledge_tool",
     description=(
         "Tool dùng để lấy tất cả hướng dẫn, mô tả chi tiết thông tin trong bài toán phân loại.\n"
         "**Sử dụng khi:**\n"
@@ -21,10 +21,10 @@ def get_category_instructions() -> list[dict[str, str | None]]:
 
 
 @tool(
-    "get_selected_category_instructions",
+    "get_selected_internal_knowledge_tool",
     args_schema=SelectedCategoryInstructionsParams,
     description=(
-        "Tool dùng để lấy hướng dẫn và mô tả chi tiết các category để làm rõ hơn về nội dung của tài liệu trong nhiệm vụ cần thực hiện.\n"
+        "Tool dùng để lấy kiến thức, mô tả chi tiết về các thành phần bên trong nhiệm vụ cần thực hiện.\n"
         "Tool dùng bổ sung thông tin trước khi thực hiện gọi tool tìm kiếm và trích xuất thông tin để thực hiện nhiệm vụ.\n"
         "**Sử dụng trong các nhiệm vụ:**\n"
         "   - Nhiệm vụ cần trích xuất, kiểm tra thông tin.\n"
@@ -54,7 +54,7 @@ def get_selected_category_instructions(
 ########
 
 @tool(
-    "customer_answer_content_search",
+    "search_internal_knowledge_tool",
     args_schema=BusinessSearchParams,
     description=(
         "Tool dùng để tìm kiếm, trích xuất thông tin từ nội dung nội bộ để trả lời câu hỏi khách hàng.\n"
