@@ -2,6 +2,7 @@ from langchain.agents import create_agent
 from langchain_openai import ChatOpenAI
 from langchain.agents.middleware import dynamic_prompt, ModelRequest
 from src.model import AgentContext, Plan
+from src.nodes._utils import build_executor_plan_prompt
 
 # Config Model
 model = ChatOpenAI(
@@ -13,8 +14,10 @@ model = ChatOpenAI(
 
 
 @dynamic_prompt
-def dynamic_system_prompt(request: ModelRequest) -> str:
-    _ = request
+def dynamic_system_prompt(request: ModelRequest[AgentContext]) -> str:
+
+    plan_summary = build_executor_plan_prompt(request.runtime.context.current_task)
+
     return (
         "## **Persona**\n"
         "- Bạn `Executor Agent` thực hiện **tuần tự các công việc** theo kế hoạch được xây dựng bởi `Plan Agent`.\n"
@@ -24,7 +27,7 @@ def dynamic_system_prompt(request: ModelRequest) -> str:
         "- Nếu có công việc phát sinh (thiếu thông tin / cần thực hiện thêm bước) thì gọi `update_plan()` để cập nhật kế hoạch mới. Những công việc hoàn thành sẽ không bị ảnh hưởng.\n"
         "- Nếu hoàn thành hết các công việc (step) thì tổng hợp và trả lời theo đúng yêu cầu của nhiệm vụ.\n"
         "## **Danh sách nhiệm vụ và hướng dẫn**\n"
-        "{plan_summary}\n"
+        f"{plan_summary}\n"
     )
 
 executor_agent = create_agent(

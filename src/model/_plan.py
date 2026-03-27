@@ -6,29 +6,29 @@ class Step(BaseModel):
     """
     Đại diện cho một bước thực hiện duy nhất.
     """
-    expected_input: str | None = Field(
+    step_expected_input: str | None = Field(
         default=None,
         description=(
             "Thông tin đầu vào của bước để thực hiện nhiệm vụ.\n"
         )
     )
-    sub_task_name: str = Field(
+    step_name: str = Field(
         ...,
         description="Tên nhiệm vụ con cần thực hiện để hoàn thành nhiệm vụ nhỏ.",
     )
-    expected_result: str = Field(
+    step_expected_output: str = Field(
         ...,
         description="Kết quả đầu ra mong đợi sau khi hoàn thành bước.",
     )
     used_tools: list[str] = Field(
-        default=list,
+        default_factory=list,
         description=(
             "Dựa vào input và nhiệm vụ. Xem xét có nên sử dụng tool không. Đối với các tool search thông tin thì nếu dã có thông tin trước đó thì không cần sử dụng thêm.\n"
         ),
-    )
+    ),
     status: Literal["pending", "in_progress", "completed", "retry"] = Field(
         default="pending",
-        description="Trạng thái của nhiệm vụ.",
+        description="Trạng thái của bước.",
     )
 
 
@@ -91,20 +91,20 @@ class Plan(BaseModel):
 
 
 class PlanExecutionParams(BaseModel):
-    task: SubTask = Field(
+    steps: list[Step] = Field(
         ...,
-        description="Danh sách các công việc cần thực hiện để hoàn thành nhiệm vụ.",
+        description="Danh sách các bước cần thực hiện để hoàn thành nhiệm vụ.",
     )
-    update_type: Literal["update_task_status", "update_new_plan"] = Field(
+    update_type: Literal["update_task_status", "add_new_task"] = Field(
         default="update_task_status",
         description=(
             "- `update_task_status`: chỉ đổi trạng thái công việc.\n"
-            "- `update_new_plan` (có công việc phát sinh cần bổ sung task mới vào plan)."
+            "- `add_new_task`: có công việc phát sinh cần bổ sung task mới vào plan."
         ),
     )
-    reason_update_new_plan: str | None = Field(
-        default=None,
+    reason: str = Field(
+        ...,
         description=(
-            "Lý do cần cập nhật plan mới. Trường này có thể để `None` khi chỉ update trạng thái công việc."
+            "Mô tả ngắn gọn lý do cần cập nhập."
         ),
     )

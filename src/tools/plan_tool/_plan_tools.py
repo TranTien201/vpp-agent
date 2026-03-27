@@ -1,6 +1,6 @@
+from calendar import c
 from langchain.tools import tool, ToolRuntime
-from src.model import AgentContext
-from src.model import Plan, PlanExecutionParams
+from src.model import AgentContext, Step, PlanExecutionParams
 from typing import Literal
 
 @tool(
@@ -17,10 +17,34 @@ from typing import Literal
     ),
 )
 def update_plan(
+    steps: list[Step], 
+    update_type: Literal["update_task_status", "add_new_task"], 
+    reason: str,
     runtime: ToolRuntime[AgentContext],
-    plan: Plan, 
-    update_type: Literal["update_task_status", "update_new_plan"], 
-    reason_update_new_plan: str | None = None,
 ) -> str:
+    _ = update_type
+    _ = reason
 
-    return "Cập nhật kế hoạch công việc thành công."
+    runtime.context.current_task.steps = steps
+    current_step = None
+    
+
+    nums_completed = 0
+    for step in steps:
+        if step.status == "completed":
+            nums_completed += 1
+
+        if step.status == "in_progress":
+            current_step = step.step_name
+            runtime.context.current_tool_enabled = step.used_tools
+            break
+
+    progress = f"{nums_completed}/{len(steps)}"
+
+    content = {
+        "steps": [step.model_dump() for step in steps],
+        "progress": progress,
+        "current_step": current_step
+    }
+
+    return content
