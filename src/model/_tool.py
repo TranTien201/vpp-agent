@@ -1,5 +1,6 @@
 from typing import Literal
 from pydantic import BaseModel, Field
+from ._plan import PlanStep
 
 ContentType = Literal["text", "image", "table", "chart", "all"]
 
@@ -30,4 +31,11 @@ class BusinessSearchParams(BaseModel):
             "Danh sách các trường thông tin cần trích xuất kèm các loại nội dung tương ứng "
             "trong internal."
         ),
+    )
+
+
+class PlanExecutionParams(BaseModel):
+    steps: list[PlanStep] = Field(
+        ...,
+        description="Danh sách các bước cần thực hiện để hoàn thành nhiệm vụ.",
     )
