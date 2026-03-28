@@ -1,11 +1,7 @@
-import os
-from dotenv import load_dotenv
 from langchain.agents import create_agent
 from langchain_openai import ChatOpenAI
 from langchain.agents.middleware import dynamic_prompt, ModelRequest
-from src.model import AgentContext, Plan
-
-load_dotenv()
+from src.model import AgentContext, PlanAgentResponse
 
 # Config Model
 # model = ChatOpenAI(
@@ -25,98 +21,42 @@ model = ChatOpenAI(
 @dynamic_prompt
 def dynamic_system_prompt(request: ModelRequest[AgentContext]) -> str:
     _ = request
+
     return (
         "## **Persona**\n"
-        "- **Bài toán**\n"
-        "  - **Input:**\n"
-        "       1. Câu hỏi cần trả lời.\n"
-        "       2. Document dùng để cung cấp thông tin để trả lời câu hỏi.\n"
-        "- **Vai trò**\n"
-        "  - Xây dựng kết hoạch công việc chi tiết. Để `executor-agent` thực hiện công việc trên các **document** khách hàng cung cấp nhằm trả lời câu hỏi.\n"
+        "- Bạn `plan-agent` hỗ trợ xây dựng các bước (step) kế hoạch chi tiết cho `executor-agent` để thực hiện công việc / nhiệm vụ trên các document được lưu trong cơ sở dữ liệu trong lĩnh vực quản lý hồ sơ hoàn công (竣工図書) cho các dự án nhà máy điện mặt trời tại Nhật Bản.\n"
 
         "## **Quy tắc xây dựng kế hoạch**\n"
-        "- `executor-agent` **không có kiến thức về các dự án cụ thể**. Nên xây dựng các bước (tool) để thực hiện lấy thông tin, kiến thức trước khi gọi tool `search_document_tool` để thực hiện nhiệm vụ.\n"
-        "- `sub-task` là các nhiệm vụ con được tách ra từ nhiệm vụ chính. Không tự ý tạo ra các `sub-task` mà không tồn tại trong nhiệm vụ chính.\n"
-        "- Nếu `sequential` và sub-task sau thực hiện việc trích xuất, tìm kiếm thông tin từ output của sub-task trước thì không cần gọi tool lấy kiến thức nội bộ thêm.\n"
-        "- Đối với `sub-task` liên quan đến việc xác định thông tin thì cần gọi tool `search_internal_knowledge_tool` để lấy thêm trước khi `search_document_tool` để thực hiện.\n"
+        "- `executor-agent` **không có kiến thức về các dự án cụ thể**. Nên luôn bổ sung bước gọi `search_internal_knowledge_tool` trước khi `fetch_rag_documents_tool` nếu cần xác định loại tài liệu hoặc thuật ngữ chuyên ngành.\n"
+        "- Cần có bước tổng hợp kết quả để trả lời câu hỏi cuối cùng.\n"
 
         "## **Tool sử dụng**\n"
         "### **Tool cung cấp thông tin**\n"
-        "- `search_internal_knowledge_tool`: Tool lấy thêm thông tin bổ sung trước khi thực hiện tìm kiếm và trích xuất thông tin. Tool nhằm bổ sung thêm thông tin khái quát.\n"
+        "- `search_internal_knowledge_tool`: Lấy thông tin bổ sung (thuật ngữ, phân loại tài liệu...) trước khi tìm kiếm. Dùng khi cần xác định loại hồ sơ hoặc tiêu chí tìm kiếm.\n"
+        "- `fetch_rag_documents_tool`: Lấy các document liên quan từ cơ sở dữ liệu. Không gọi lại nếu đã có document từ bước trước.\n"
 
-        # "- `search_document_tool`: Tool dùng để tìm kiếm thông tin từ document khách hàng cung cấp để cung cấp thông tin cần thiết cho việc trả lời câu hỏi. Sử dụng cần xác định thông tin. Không sử dụng nếu đã có thông tin trước đó (sequential).\n"
+        "### **Tool trích xuất thông tin**\n"
+        "- `extraction_information_tool`: Trích xuất thông tin cần thiết từ document đã lấy. Chỉ dùng sau khi đã có document.\n"
 
-        "`search_document_tool`: Dùng để lấy ra document liên quan đến nhiệm vụ.\n"
-        "   - Sử dụng khi:\n"
-        "       - **Chưa có document** liên quan nhiệm vụ, cần lấy ra để thực hiện các sub-task tiếp theo\n"
-        "   - Không sử dụng khi:\n"
-        "       - **Đã lấy ra document** trước đó. Vì đã lấy ra document liên quan chỉ cần sử dụng **document** đó thực hiện nhiệm vụ.\n"
+        "### **Tool validation (self-correction)**\n"
+        "- `validate_step_tool`: Kiểm tra tính hợp lệ của kết quả sau các bước tìm kiếm và trích xuất thông tin.\n"
+        "  - Sử dụng ngay sau các bước lấy thông tin từ cơ sở dữ liệu và trích xuất thông tin, sắp xếp thông tin\n"
+        "  - Sử dụng khi kiểm tra kết quả cuối cùng có đúng `final_output_template` không.\n"
 
-        "### **Tool hỗ trợ trích xuất thông tin**\n"
-        "- `extraction_information_tool`: Tool dùng để trích xuất thông tin sau khi `search_document_tool` đã được sử dụng. Sử dụng để trích xuất chính xác để trả lời cho câu hỏi.\n"
+        # "### **Thứ tự bước chuẩn trong một sub-task**\n"
+        # "```\n"
+        # "[search_internal_knowledge_tool (nếu cần)]\n"
+        # "→ fetch_rag_documents_tool\n"
+        # "→ validate_step_tool       ← kiểm tra document có đủ/liên quan không\n"
+        # "→ extraction_information_tool\n"
+        # "→ validate_step_tool       ← kiểm tra kết quả extraction có đúng/đủ không\n"
+        # "```\n"
     )
-    # return (
-    #     "## **Persona**\n"
-    #     "Bạn `Plan Agent` hỗ trợ xây dựng kế hoạch chi tiết cho `Executor Agent` để thực hiện công việc trong lĩnh vực quản lý hồ sơ hoàn công (竣工図書) cho các dự án nhà máy điện mặt trời tại Nhật Bản.\n"
-        
-    #     "## **Vai trò**\n"
-    #     "- Tiếp nhận yêu cầu và nhiệm vụ.\n"
-    #     "- Xây dựng kế hoạch chi tiết gồm các bước thực hiện và các công cụ cần thiết để thực hiện nhiệm vụ đó một cách chi tiết cho `Executor Agent`.\n"
-
-    #     "## **Quy trình xây dựng kế hoạch**\n"
-    #     "   **Bước 1: Phân tích nhiệm vụ**\n"
-    #     "       - Từ nhiệm vụ xác định có bao nhiêu sub-task cần thực hiện để hoàn thành nhiệm vụ đó.\n"
-    #     "       - Xác định sub-tasks cần thực hiện theo thứ tự nào [sequential/parallel].\n"
-    #     "       **Quy định Bước 1**\n"
-    #     "           - Nếu `sequential` thì kết quả sub-task trước sẽ được dùng làm input cho sub-task sau.\n"
-    #     "       Ví dụ: Nhiệm vụ: Xác định hồ sơ điện lực và kiểm tra ngày phát hành.\n"
-    #     "       -> sub-task: [Xác định hồ sơ điện lực, Kiểm tra ngày phát hành]\n"
-    #     "       -> execution mode: sequential\n"
-    #     "       -> execution_process (mô tả): Sau khi hoàn thành `xác định hồ sơ điện lực`, "
-    #     "tiến hành lấy thông tin để `kiểm tra ngày phát hành`.\n"
-
-    #     "   **Bước 2: Xây dựng sub-task**\n"
-    #     "       - Đầu tiên, cần xác định input của sub-task đó là gì. Xác định output của sub-task đó là gì.\n"
-
-
-    #     "## **Quy tắc xây dựng kế hoạch**\n"
-    #     "- `Executor Agent` không có kiến thức về các dự án cụ thể. Nên:\n"
-    #     "   - Xây dựng các bước (tool) để thực hiện lấy thông tin, kiến thức trước khi gọi tool `customer_answer_content_search` để thực hiện nhiệm vụ.\n"
-
-    #     "- Quy tắc trong xây dựng `sub-task`:\n"
-    #     "   - Nếu `sequential` thì input của sub-task sau sẽ là output của sub-task trước:\n"
-    #     "       - Nếu **sub-task đầu** đã lấy được thông tin cần cho **sub-task sau** thì **sub-task sau** hãy sử dụng đó làm input và không cần phải gọi `get_all_internal_knowledge_tool` gì thêm.\n"
-    #     "   - Nếu `parallel` thì input của sub-task sau sẽ là output của sub-task trước.\n"
-
-
-    #     "## **Các công cụ hỗ trợ**\n"
-        
-    #     "### **Tool cung cấp thông tin**\n"
-
-    # )
-
 
 
 plan_agent = create_agent(
-    model, 
+    model,
     middleware=[dynamic_system_prompt],
     context_schema=AgentContext,
-    response_format=Plan,
+    response_format=PlanAgentResponse,
 )
-
-
-from langchain.tools import tool
-from langchain.agents import create_agent
-
-
-@tool
-def search(query: str) -> str:
-    """Search for information."""
-    return f"Results for: {query}"
-
-@tool
-def get_weather(location: str) -> str:
-    """Get weather information for a location."""
-    return f"Weather in {location}: Sunny, 72°F"
-
-agent = create_agent(model, tools=[search, get_weather])

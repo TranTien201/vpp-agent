@@ -1,4 +1,4 @@
-from src.nodes._plan_agent import plan_agent, agent
+from src.nodes._plan_agent import plan_agent
 
 
 result = plan_agent.invoke(

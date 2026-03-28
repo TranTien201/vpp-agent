@@ -1,6 +1,11 @@
 from dataclasses import dataclass
 from typing import Literal
 
+# Tool middleware (wrap_tool_call): logging + retry
+TOOL_CALL_MAX_RETRIES = 3
+TOOL_CALL_RETRY_DELAY_SECONDS = 1.0
+
+
 @dataclass
 class AgentName:
     PLAN_AGENT = "plan_agent"

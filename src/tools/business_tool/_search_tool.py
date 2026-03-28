@@ -8,53 +8,66 @@ from src.tools.business_tool._utils import _load_sort_folders_ja_items
 from src.constants import CategoryNameJAPANESE
 
 
+# @tool(
+#     "get_all_internal_knowledge_tool",
+#     description=(
+#         "Tool dùng để lấy tất cả hướng dẫn, mô tả chi tiết thông tin trong bài toán phân loại.\n"
+#         "**Sử dụng khi:**\n"
+#         "   - Các bài toán sắp xếp dựa vào nội dung của tài liệu"
+#     ),
+# )
+# def get_category_instructions() -> list[dict[str, str | None]]:
+#     return _load_sort_folders_ja_items()
+
+
+# @tool(
+#     "get_selected_internal_knowledge_tool",
+#     args_schema=SelectedCategoryInstructionsParams,
+#     description=(
+#         "Tool dùng để lấy kiến thức, mô tả chi tiết về các thành phần bên trong nhiệm vụ cần thực hiện.\n"
+#         "Tool dùng bổ sung thông tin trước khi thực hiện gọi tool tìm kiếm và trích xuất thông tin để thực hiện nhiệm vụ.\n"
+#         "**Sử dụng trong các nhiệm vụ:**\n"
+#         "   - Nhiệm vụ cần trích xuất, kiểm tra thông tin.\n"
+#         "   - Xác định thông tin, lấy thông tin, kiểm tra thông tin.\n"
+#         "   - Kiểm tra thông tin sau khi đã phân loại tài liệu"
+#     ),
+# )
+# def get_selected_category_instructions(
+#     categories: list[CategoryNameJAPANESE], runtime: ToolRuntime[AgentContext]
+# ) -> dict[str, Any]:
+#     order = {name: idx for idx, name in enumerate(categories)}
+#     items: list[dict[str, str | None]] = sorted(
+#         (
+#             row
+#             for row in _load_sort_folders_ja_items()
+#             if row.get("name") in order
+#         ),
+#         key=lambda r: order[str(r["name"])],
+#     )
+
+#     return {
+#         "source": "sort_folders_ja.json",
+#         "categories": categories,
+#         "items": items,
+#     }
+
 @tool(
-    "get_all_internal_knowledge_tool",
+    "search_internal_knowledge_tool",
     description=(
         "Tool dùng để lấy tất cả hướng dẫn, mô tả chi tiết thông tin trong bài toán phân loại.\n"
         "**Sử dụng khi:**\n"
         "   - Các bài toán sắp xếp dựa vào nội dung của tài liệu"
     ),
 )
-def get_category_instructions() -> list[dict[str, str | None]]:
-    return _load_sort_folders_ja_items()
-
-
-@tool(
-    "get_selected_internal_knowledge_tool",
-    args_schema=SelectedCategoryInstructionsParams,
-    description=(
-        "Tool dùng để lấy kiến thức, mô tả chi tiết về các thành phần bên trong nhiệm vụ cần thực hiện.\n"
-        "Tool dùng bổ sung thông tin trước khi thực hiện gọi tool tìm kiếm và trích xuất thông tin để thực hiện nhiệm vụ.\n"
-        "**Sử dụng trong các nhiệm vụ:**\n"
-        "   - Nhiệm vụ cần trích xuất, kiểm tra thông tin.\n"
-        "   - Xác định thông tin, lấy thông tin, kiểm tra thông tin.\n"
-        "   - Kiểm tra thông tin sau khi đã phân loại tài liệu"
-    ),
-)
-def get_selected_category_instructions(
-    categories: list[CategoryNameJAPANESE], runtime: ToolRuntime[AgentContext]
+async def search_internal_knowledge_tool(
+    runtime: ToolRuntime[AgentContext]
 ) -> dict[str, Any]:
-    order = {name: idx for idx, name in enumerate(categories)}
-    items: list[dict[str, str | None]] = sorted(
-        (
-            row
-            for row in _load_sort_folders_ja_items()
-            if row.get("name") in order
-        ),
-        key=lambda r: order[str(r["name"])],
-    )
+    pass
 
-    return {
-        "source": "sort_folders_ja.json",
-        "categories": categories,
-        "items": items,
-    }
 
 ########
-
 @tool(
-    "search_internal_knowledge_tool",
+    "fetch_rag_documents_tool",
     args_schema=BusinessSearchParams,
     description=(
         "Tool dùng để tìm kiếm, trích xuất thông tin từ nội dung nội bộ để trả lời câu hỏi khách hàng.\n"
@@ -66,7 +79,7 @@ def get_selected_category_instructions(
         "   - Chỉ cần phân loại/sắp xếp tài liệu (không phải tra cứu để trả lời câu hỏi).\n"
     )
 )
-async def search_internal(
+async def fetch_rag_documents_tool(
     information_to_extract: BusinessFieldRequest,
     runtime: ToolRuntime[AgentContext]
 ) -> str:
@@ -103,11 +116,3 @@ async def search_internal(
     }
 
     return json.dumps(payload, ensure_ascii=True)
-
-
-# @tool(
-#     "load_"
-# )
-# def load_internal(runtime: ToolRuntime[AgentContext]) -> dict[str, Any]:
-
-#     pass

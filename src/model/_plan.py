@@ -1,35 +1,92 @@
-from typing import Literal
+from typing import Literal, Any
 
 from pydantic import BaseModel, Field
 
-class Step(BaseModel):
+
+class BaseStep(BaseModel):
     """
-    Đại diện cho một bước thực hiện duy nhất.
+    Base class cho các loại step trong plan.
     """
-    step_expected_input: str | None = Field(
-        default=None,
-        description=(
-            "Thông tin đầu vào của bước để thực hiện nhiệm vụ.\n"
-        )
+    step_id: str = Field(
+        ...,
+        description="ID của bước.",
     )
     step_name: str = Field(
         ...,
-        description="Tên nhiệm vụ con cần thực hiện để hoàn thành nhiệm vụ nhỏ.",
-    )
-    step_expected_output: str = Field(
-        ...,
-        description="Kết quả đầu ra mong đợi sau khi hoàn thành bước.",
+        description="Tên bước cần thực hiện.",
     )
     used_tools: list[str] = Field(
         default_factory=list,
         description=(
             "Dựa vào input và nhiệm vụ. Xem xét có nên sử dụng tool không. Đối với các tool search thông tin thì nếu dã có thông tin trước đó thì không cần sử dụng thêm.\n"
         ),
-    ),
+    )
     status: Literal["pending", "in_progress", "completed", "retry"] = Field(
         default="pending",
-        description="Trạng thái của bước.",
+        description=(
+            "- `pending`: chưa bắt đầu thực hiện bước.\n"
+            "- `in_progress`: đang thực hiện bước.\n"
+            "- `completed`: đã hoàn thành bước.\n"
+            "- `retry`: cần thực hiện lại bước.\n"
+        ),
     )
+
+
+class Step(BaseStep):
+    """
+    Đại diện cho một bước thực hiện duy nhất.
+    """
+    step_id: str = Field(
+        ...,
+        description="ID của bước. Prefix là `step_`.",
+    )
+    step_expected_input: str | None = Field(
+        default=None,
+        description=(
+            "- Thông tin đầu vào mong muốn để thực hiện bước đó.\n"
+            "- Nếu là bước đầu tiên thì không cần input.\n"
+        )
+    )
+    # depend_on: list[str] = Field(
+    #     default_factory=list,
+    #     description="Danh sách các bước cần thực hiện trước khi thực hiện bước này.",
+    # )
+    step_expected_output: str = Field(
+        ...,
+        description="Kết quả đầu ra mong đợi sau khi hoàn thành bước.",
+    )
+
+
+class ValidationStep(BaseStep):
+    """
+    Bước kiểm tra (validation) dành riêng cho cơ chế self-correction.
+    Luôn đứng ngay sau bước cần kiểm tra trong danh sách steps.
+    """
+    step_id: str = Field(
+        ...,
+        description="ID của bước. Prefix là `validate_`.",
+    )
+    step_name: str = Field(
+        ...,
+        description="Tên bước kiểm tra. Ví dụ: 'Kiểm tra document tìm được', 'Kiểm tra kết quả trích xuất'.",
+    )
+    validation_criteria: str = Field(
+        ...,
+        description=(
+            "Yêu cầu và tiêu chí kiểm tra. Mô tả rõ cần kiểm tra điều gì và tại sao.\n"
+            "Ví dụ: 'Kiểm tra document có thuộc loại hồ sơ điện lực không, có chứa thông tin ngày phát hành không'.\n"
+            "Ví dụ: 'Kiểm tra ngày phát hành đã trích xuất đúng định dạng chưa, có khớp với yêu cầu nhiệm vụ không'."
+        ),
+    )
+    used_tools: list[str] = Field(
+        default_factory=lambda: ["validate_step_tool"],
+        description=(
+            "Tool validation cố định cho bước kiểm tra (self-correction)."
+        ),
+    )
+
+
+PlanStep = Step | ValidationStep
 
 
 class SubTask(BaseModel):
@@ -63,48 +120,5 @@ class SubTask(BaseModel):
         default="",
         description=(
             "Mô tả quy trình thực hiện để hoàn thành nhiệm vụ."
-        ),
-    )
-
-
-class Plan(BaseModel):
-    task_summary: str = Field(
-        ...,
-        description="Mô tả tổng quan về nhiệm vụ cần thực hiện.",
-    )
-    tasks_execution_mode: Literal["sequential", "parallel"] = Field(
-        default="sequential",
-        description=(
-            "Chế độ thực thi cho toàn bộ danh sách `sub_tasks` trong response.\n"
-            "- `sequential`: output của sub_task trước sẽ được dùng làm input cho sub_task sau.\n"
-            "- `parallel`: thực hiện các sub_task không phụ thuộc lẫn nhau."
-        ),
-    )
-    sub_task: list[SubTask] = Field(
-        default_factory=list,
-        description="Danh sách các sub-task được tách ra từ yêu cầu của khách hàng. Các sub-task cần được thực hiện để hoàn thành nhiệm vụ của khách hàng.",
-    )
-    nums_sub_task: int = Field(
-        default=0,
-        description="Số lượng sub-task được tách ra từ yêu cầu của khách hàng.",
-    )
-
-
-class PlanExecutionParams(BaseModel):
-    steps: list[Step] = Field(
-        ...,
-        description="Danh sách các bước cần thực hiện để hoàn thành nhiệm vụ.",
-    )
-    update_type: Literal["update_task_status", "add_new_task"] = Field(
-        default="update_task_status",
-        description=(
-            "- `update_task_status`: chỉ đổi trạng thái công việc.\n"
-            "- `add_new_task`: có công việc phát sinh cần bổ sung task mới vào plan."
-        ),
-    )
-    reason: str = Field(
-        ...,
-        description=(
-            "Mô tả ngắn gọn lý do cần cập nhập."
         ),
     )
